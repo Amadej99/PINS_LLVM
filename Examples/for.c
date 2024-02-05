@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int power(int a, int b) {
     if (b == 0) 
@@ -11,9 +12,7 @@ int power(int a, int b) {
     return c;
 }
 
-int main() {
-    int a = 5;
-    int b = 4;
-    int c = power(a, b);
+int main(int argc, char* argv[]) {
+    int c = power(atoi(argv[1]), atoi(argv[2]));
     printf("%d\n", c);
 }
