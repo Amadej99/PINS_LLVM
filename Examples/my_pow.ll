@@ -4,6 +4,8 @@
 
 declare i32 @printf(i8* noundef,...)
 
+declare i32 @atoi(i8* noundef)
+
 define i32 @my_power(i32 noundef %a, i32 noundef %b){
     %is0 = icmp eq i32 %b, 0
     br i1 %is0, label %return1, label %initForLoop
@@ -53,8 +55,23 @@ define i32 @my_power(i32 noundef %a, i32 noundef %b){
         ret i32 %result
 }
 
-define i32 @main(){
-    %result = call i32 @my_power(i32 5, i32 5)
+define i32 @main(i32 %argc, i8** %argv) {
+    %count = alloca i32, align 4
+    %argumentsPointer = alloca i8**, align 8
+    store i8** %argv, i8*** %argumentsPointer, align 8
+
+    %arguments = load i8**, i8*** %argumentsPointer, align 8
+
+    %firstArgumentPtr = getelementptr inbounds i8*, i8** %arguments, i64 1
+    %firstArgument = load i8*, i8** %firstArgumentPtr, align 8
+
+    %secondArgumentPtr = getelementptr inbounds i8*, i8** %arguments, i64 2
+    %secondArgument = load i8*, i8** %secondArgumentPtr, align 8
+
+    %firstArgumentAsInt = call i32 @atoi(i8* %firstArgument)
+    %secondArgumentAsInt = call i32 @atoi(i8* %secondArgument)
+
+    %result = call i32 @my_power(i32 %firstArgumentAsInt, i32 %secondArgumentAsInt)
     %formatStr = getelementptr [3 x i8], [3 x i8]* @.str, i32 0, i32 0
     call i32 (i8*, ...) @printf(i8* %formatStr, i32 %result)
     ret i32 0
